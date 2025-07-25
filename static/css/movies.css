@@ -1,0 +1,88 @@
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.card {
+    border: none;
+    border-radius: 12px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.table {
+    --bs-table-bg: transparent;
+}
+
+.table-hover tbody tr {
+    transition: background-color 0.2s;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(13, 110, 253, 0.05);
+}
+
+.btn {
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.modal-content {
+    border-radius: 12px;
+    border: none;
+}
+
+.modal-header {
+    border-radius: 12px 12px 0 0;
+}
+
+@media (max-width: 768px) {
+    .table-responsive {
+        border-radius: 12px;
+        border: 1px solid #dee2e6;
+    }
+
+    .table thead {
+        display: none;
+    }
+
+    .table tr {
+        display: block;
+        margin-bottom: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .table td {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .table td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        margin-right: 1rem;
+    }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-spinner {
+    animation: spin 1s linear infinite;
+    width: 24px;
+    height: 24px;
+    border: 3px solid rgba(0,0,0,0.1);
+    border-top-color: #0d6efd;
+    border-radius: 50%;
+}

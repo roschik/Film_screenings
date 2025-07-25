@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Заголовок и кнопка добавления -->
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h1 class="display-4">🍿 Управление сеансами</h1>
+        <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#addScreeningModal">
+            <i class="bi bi-plus-circle"></i> Добавить сеанс
+        </button>
+    </div>
+
+    <!-- Статистика -->
+    <div class="card shadow-sm mb-5">
+        <div class="card-header bg-dark text-white">
+            <h2 class="h5 mb-0"><i class="bi bi-graph-up"></i> Статистика</h2>
+        </div>
+        <div class="card-body" id="statsContainer">
+            <div class="row" id="statsRow"></div>
+        </div>
+    </div>
+
+    <!-- Фильтры и сортировка -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Сортировка:</label>
+                    <select class="form-select" id="sortField">
+                        <option value="title">По названию</option>
+                        <option value="genre">По жанру</option>
+                        <option value="date">По дате</option>
+                        <option value="duration">По продолжительности</option>
+                        <option value="price">По цене</option>
+                        <option value="seats">По количеству мест</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Порядок:</label>
+                    <select class="form-select" id="sortOrder">
+                        <option value="asc">По возрастанию</option>
+                        <option value="desc">По убыванию</option>
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button class="btn btn-outline-primary w-100" id="applyFilters">
+                        <i class="bi bi-funnel"></i> Применить
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Таблица сеансов -->
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Название</th>
+                            <th>Жанр</th>
+                            <th>Длительность</th>
+                            <th>Цена</th>
+                            <th>Места</th>
+                            <th>Дата</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody id="screeningsTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно добавления -->
+<div class="modal fade" id="addScreeningModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title">Добавить сеанс</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addScreeningForm">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Название фильма</label>
+                            <input type="text" class="form-control" name="title" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Жанр</label>
+                            <input type="text" class="form-control" name="genre" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Длительность (мин)</label>
+                            <input type="number" class="form-control" name="duration" min="1" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Цена (₽)</label>
+                            <input type="number" class="form-control" name="price" min="0" step="0.01" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Количество мест</label>
+                            <input type="number" class="form-control" name="seats" min="1" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Дата и время</label>
+                            <input type="datetime-local" class="form-control" name="date" required>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-primary" id="addScreeningSubmit">Добавить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно редактирования -->
+<div class="modal fade" id="editScreeningModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title">Редактировать сеанс</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editScreeningForm">
+                    <input type="hidden" name="id">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Название фильма</label>
+                            <input type="text" class="form-control" name="title" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Жанр</label>
+                            <input type="text" class="form-control" name="genre" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Длительность (мин)</label>
+                            <input type="number" class="form-control" name="duration" min="1" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Цена (₽)</label>
+                            <input type="number" class="form-control" name="price" min="0" step="0.01" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Количество мест</label>
+                            <input type="number" class="form-control" name="seats" min="1" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Дата и время</label>
+                            <input type="datetime-local" class="form-control" name="date" required>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-primary" id="editScreeningSubmit">Сохранить</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/movies.js') }}"></script>
+{% endblock %}
